@@ -41,8 +41,24 @@ public class Game : MonoBehaviour
         {
             textCounter.text = count.ToString();
             // TODO: Implement handling button clicks using await. Task.WhenAny should be helpful.
-            await Task.WhenAny(Click(buttonDecrement), Click(buttonIncrement));
-            count++;
+            try
+            {
+                // Task<Button> completedTask = await Task.WhenAny(Click(buttonDecrement), Click(buttonIncrement));
+                Task<Button> completedTask = await Task.WhenAny(Click(buttonDecrement), Click(buttonIncrement));
+                if (completedTask.Result == buttonIncrement)
+                {
+                    count++;
+                }
+                else if (completedTask.Result == buttonDecrement)
+                {
+                    count--;
+                }
+            }
+            catch (System.ArgumentNullException e)
+            {
+                Debug.Log(e.ToString());
+                break ;
+            }
             // TODO: Add a 500ms delay here, just for fun :)
             await Task.Delay(500);
         }
